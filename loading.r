@@ -3,7 +3,9 @@ library (jsonlite)
 # Obtaining path to file from an input
 file_name <- readline ("review, business, checkin, tip or user? ")
 file_path <- paste ("yelp_academic_dataset_", file_name, ".json", sep = "")
-path <- file.path (getwd (), "Dataset", file_path)
+# Next line for a more structured structure
+# path <- file.path (getwd (), "Dataset", file_path)
+path <- file_path
 
 # Geting variables of interest
 # reads first line to get types and names
