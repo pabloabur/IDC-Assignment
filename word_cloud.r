@@ -4,16 +4,16 @@ library(SnowballC)
 library(wordcloud)
 
 # Load review with texts
-load ("texts.rda")
-load("BR0data.rda")
+load ("test2.rda")
 
 # Getting only values that we're interested in
-brbbqid<-businesses[which(businesses$is_bbq & businesses$is_brazillian == T),1]
-chunk<-texts[which(texts$business_id %in% brbbqid),]
-chunk_text <- chunk$text
+#brbbqid<-businesses[which(businesses$is_bbq & businesses$is_brazillian == T),1]
+#chunk<-texts[which(texts$business_id %in% brbbqid),]
+#chunk_text <- chunk$text
+chunk_text <- test2$categories
 
 # free up RAM
-rm (businesses, texts, chunk)
+#rm (businesses, texts, chunk)
 
 # Series of operations on the text data to simplify text
 print ("Preparing text")
