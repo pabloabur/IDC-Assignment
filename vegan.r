@@ -8,12 +8,12 @@ Mode <- function(x) {
 
 businesses <- readRDS ("business.rds")
 reviews <- readRDS ("review.rds")
-#load ("businesses.rda")
-#load ("reviews.rda")
 
 # Filter matches with "vegan" in businesses
 businesses <- mutate (businesses, is_vegan = grepl ("vegan", categories, ignore.case=T))
-vegan_businesses <- filter (businesses, is_vegan)
+vegan_businesses <- businesses %>%
+    filter (is_vegan) %>%
+    select (-is_vegan)
 
 # Get reviews of vegan businesses and then identify possible vegans
 vegan_reviews <- filter (reviews, business_id %in% vegan_businesses$business_id)
@@ -41,9 +41,6 @@ vegan_data <- full_join(not_vegan_subset, vegan_subset)
 # Eliminating NAs
 vegan_data$qt_not_vegan_review[is.na (vegan_data$qt_not_vegan_review)] <- 0
 
-# Apply criteria to be classified as vegan
-vegans <- filter (vegan_data, qt_vegan_review > 1, qt_vegan_review > qt_not_vegan_review)
-
 # To find out user city, start by getting city of review
 # There is 'user_id' in vegan_reviews and 'city' in businesses
 review_city <- inner_join (vegan_reviews, businesses)
@@ -53,22 +50,9 @@ user_city <- review_city %>%
     summarise (cities = list (city)) %>%
     mutate (city = sapply (cities, Mode)) %>%
     select (-cities)
-# Join with vegans dataset
-vegans <- inner_join (vegans, user_city)
-# TODO check with review city
-# zz4iaqRAIT-wju1J8wicgA
-#review_city[which(review_city$user_id=="zz4iaqRAIT-wju1J8wicgA"),]
+# Join with vegan_data dataset
+vegan_data <- inner_join (vegan_data, user_city)
 
-#vegan_states<-inner_join(reviews,select(vegans,user_id))
-#
-#dotchart(table(businesses$city))
-#cities<-data.frame(city=c("Las Vegas","Phoenix","Charlotte","Scottsdale","Montréal"))
-#bsn_ct<-inner_join(businesses,cities)
-#vegan_states<-inner_join(vegan_states,bsn_ct)
-#tabela1<-data.frame(Cidade=c("Las Vegas","Phoenix","Charlotte","Scottsdale","Montréal"))
-##sum(user_city$city == "Phoenix")
-#tabela1$Qtd_Veganos<-c("963","1060","140","272","218")
-#
 # Remove unnecessary objects
 rm (businesses, reviews, maybe_vegan_user, vegan_reviews, not_vegan_subset,
-    vegan_subset, all_other_reviews, vegan_data, review_city, user_city)
+    vegan_subset, all_other_reviews, review_city, user_city, Mode)
